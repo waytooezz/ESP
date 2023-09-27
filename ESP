@@ -1,0 +1,39 @@
+-- Get all players in the game.
+local players = game.Players:GetPlayers()
+
+-- Create a new table to store the ESP information for each player.
+local espData = {}
+
+-- Loop through all players and populate the ESP information table.
+for _, player in ipairs(players) do
+    -- Get the player's humanoid root part.
+    local humanoidRootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+
+    -- If the humanoid root part exists, add the player to the ESP information table.
+    if humanoidRootPart then
+        -- Get the player's name.
+        local playerName = player.Name
+
+        -- Get the player's position.
+        local playerPosition = humanoidRootPart.Position
+
+        -- Add the player's name and position to the ESP information table.
+        espData[playerName] = {position = playerPosition}
+    end
+end
+
+-- Create a new render hook to draw the ESP information.
+local renderHook = game.StarterGui:AddRenderHook()
+renderHook.Hooked = function()
+    -- Loop through all ESP information and draw it.
+    for _, playerData in ipairs(espData) do
+        -- Get the player's position.
+        local playerPosition = playerData.position
+
+        -- Draw a red box around the player.
+        renderHook:DrawOutline(playerPosition, Vector3.new(1, 1, 1), BrickColor.new(255, 0, 0), 1)
+
+        -- Draw the player's name above their head.
+        renderHook:DrawText(playerData.playerName, playerPosition + Vector3.new(0, 2, 0), Vector2.new(100, 20), BrickColor.new(255, 255, 255))
+    end
+end
